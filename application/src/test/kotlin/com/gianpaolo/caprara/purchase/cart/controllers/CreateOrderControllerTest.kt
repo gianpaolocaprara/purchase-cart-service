@@ -79,6 +79,7 @@ class CreateOrderControllerTest {
             price = 65.0,
             vat = 35.5
         )
+
         val response: String = mvc.post(
             path = ordersPath,
             entity = request(
@@ -124,6 +125,7 @@ class CreateOrderControllerTest {
     @Test
     fun `create order expected bad request if a product not found`() {
         every { createOrderUseCase.apply(any()) } throws InvalidParameterException("Product with id 3 not found.")
+
         mvc.post(
             path = ordersPath,
             entity = request(items = listOf(OrderItemDTO(productId = 3, quantity = 2)))

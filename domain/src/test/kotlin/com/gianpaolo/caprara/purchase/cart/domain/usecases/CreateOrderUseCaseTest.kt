@@ -1,11 +1,12 @@
 package com.gianpaolo.caprara.purchase.cart.domain.usecases
 
+import com.gianpaolo.caprara.purchase.cart.domain.exceptions.DataNotFoundException
 import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
-import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepositoryAdapter
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -14,52 +15,52 @@ import org.junit.jupiter.api.assertThrows
 
 class CreateOrderUseCaseTest {
     private lateinit var createOrderUseCase: CreateOrderUseCase
-    private lateinit var productRepository: ProductRepository
+    private lateinit var productRepositoryAdapter: ProductRepositoryAdapter
     private lateinit var orderRepository: OrderRepository
 
     @BeforeEach
     fun `set up`() {
-        productRepository = mockk(relaxed = true)
+        productRepositoryAdapter = mockk(relaxed = true)
         orderRepository = mockk(relaxed = true)
         createOrderUseCase = CreateOrderUseCase(
-            productRepository = productRepository, orderRepository = orderRepository
+            productRepositoryAdapter = productRepositoryAdapter, orderRepository = orderRepository
         )
     }
 
     @Test
     fun `test apply should call product repository in order to retrieve products`() {
-        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
-        every { productRepository.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
-
+        every { productRepositoryAdapter.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepositoryAdapter.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1), quantity = 1), OrderItem(product = Product(id = 2), quantity = 2)
             )
         )
+
         createOrderUseCase.apply(order = order)
 
         verifyOrder {
-            productRepository.findById(1)
-            productRepository.findById(2)
+            productRepositoryAdapter.findById(1)
+            productRepositoryAdapter.findById(2)
         }
     }
 
     @Test
     fun `test apply should call order repository in order to save order`() {
-        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
-        every { productRepository.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
+        every { productRepositoryAdapter.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepositoryAdapter.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
         every { orderRepository.save(any()) } returns Order(id = 111, items = emptyList())
-
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1), quantity = 1), OrderItem(product = Product(id = 2), quantity = 2)
             )
         )
+
         createOrderUseCase.apply(order = order)
 
         verifyOrder {
-            productRepository.findById(1)
-            productRepository.findById(2)
+            productRepositoryAdapter.findById(1)
+            productRepositoryAdapter.findById(2)
             orderRepository.save(
                 Order(
                     id = null, items = listOf(
@@ -73,9 +74,9 @@ class CreateOrderUseCaseTest {
 
     @Test
     fun `test apply should return expected order`() {
-        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
-        every { productRepository.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
-        every { productRepository.findById(id = 3) } returns Product(id = 3, price = 5.0, vat = 0.50)
+        every { productRepositoryAdapter.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepositoryAdapter.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
+        every { productRepositoryAdapter.findById(id = 3) } returns Product(id = 3, price = 5.0, vat = 0.50)
         every { orderRepository.save(any()) } returns Order(
             id = 123,
             items = listOf(
@@ -118,15 +119,16 @@ class CreateOrderUseCaseTest {
 
     @Test
     fun `test apply should throw exception when product not found`() {
-        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
-        every { productRepository.findById(id = 5) } throws Exception("Product with id 5 not found.")
-
+        every { productRepositoryAdapter.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepositoryAdapter.findById(id = 5) } throws DataNotFoundException("Product with id 5 not found.")
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1), quantity = 1), OrderItem(product = Product(id = 5), quantity = 2)
             )
         )
+
         val assertThrows = assertThrows<InvalidParameterException> { createOrderUseCase.apply(order = order) }
+
         assertThat(assertThrows.message).isEqualTo("Product with id 5 not found.")
     }
 }

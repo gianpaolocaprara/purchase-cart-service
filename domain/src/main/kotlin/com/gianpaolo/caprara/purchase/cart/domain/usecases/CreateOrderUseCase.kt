@@ -1,14 +1,15 @@
 package com.gianpaolo.caprara.purchase.cart.domain.usecases
 
+import com.gianpaolo.caprara.purchase.cart.domain.exceptions.DataNotFoundException
 import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
-import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepositoryAdapter
 
 class CreateOrderUseCase(
-    private val productRepository: ProductRepository,
+    private val productRepositoryAdapter: ProductRepositoryAdapter,
     private val orderRepository: OrderRepository
 ) {
     fun apply(order: Order): Order {
@@ -26,8 +27,8 @@ class CreateOrderUseCase(
     }
 
     private fun findProduct(productId: Int): Product = try {
-        this.productRepository.findById(productId)
-    } catch (_: Exception) {
+        this.productRepositoryAdapter.findById(productId)
+    } catch (_: DataNotFoundException) {
         throw InvalidParameterException("Product with id $productId not found.")
     }
 
