@@ -1,7 +1,6 @@
 package com.gianpaolo.caprara.purchase.cart.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
@@ -17,9 +16,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 class CreateOrderControllerTest {
@@ -37,23 +34,17 @@ class CreateOrderControllerTest {
 
     @Test
     fun `create order expected status created`() {
-        val createOrderDTO = CreateOrderDTO(
-            order = OrderDTO(
-                items = listOf(
-                    OrderItemDTO(productId = 1, quantity = 1)
-                )
-            )
-        )
-        mvc.post(ordersPath) {
-            contentType = MediaType.APPLICATION_JSON
-            content = ObjectMapper().registerModule(JavaTimeModule()).writeValueAsString(createOrderDTO)
-        }.andExpect { status { isCreated() } }
+        mvc.post(
+            path = ordersPath,
+            entity = request(items = listOf(OrderItemDTO(productId = 1, quantity = 1)))
+        ).andExpect { status { isCreated() } }
     }
 
     @Test
     fun `create order expected use case call`() {
-        val createOrderDTO = CreateOrderDTO(
-            order = OrderDTO(
+        mvc.post(
+            path = ordersPath,
+            entity = request(
                 items = listOf(
                     OrderItemDTO(productId = 1, quantity = 1),
                     OrderItemDTO(productId = 2, quantity = 5),
@@ -61,10 +52,6 @@ class CreateOrderControllerTest {
                 )
             )
         )
-        mvc.post(ordersPath) {
-            contentType = MediaType.APPLICATION_JSON
-            content = ObjectMapper().registerModule(JavaTimeModule()).writeValueAsString(createOrderDTO)
-        }
 
         verify(exactly = 1) {
             createOrderUseCase.apply(
@@ -81,15 +68,6 @@ class CreateOrderControllerTest {
 
     @Test
     fun `create order expected result`() {
-        val createOrderDTO = CreateOrderDTO(
-            order = OrderDTO(
-                items = listOf(
-                    OrderItemDTO(productId = 1, quantity = 1),
-                    OrderItemDTO(productId = 2, quantity = 5),
-                    OrderItemDTO(productId = 3, quantity = 2)
-                )
-            )
-        )
         every { createOrderUseCase.apply(any()) } returns Order(
             id = 123,
             items = listOf(
@@ -100,10 +78,16 @@ class CreateOrderControllerTest {
             price = 65.0,
             vat = 35.5
         )
-        val response: String = mvc.post(ordersPath) {
-            contentType = MediaType.APPLICATION_JSON
-            content = ObjectMapper().registerModule(JavaTimeModule()).writeValueAsString(createOrderDTO)
-        }.andReturn()
+        val response: String = mvc.post(
+            path = ordersPath,
+            entity = request(
+                items = listOf(
+                    OrderItemDTO(productId = 1, quantity = 1),
+                    OrderItemDTO(productId = 2, quantity = 5),
+                    OrderItemDTO(productId = 3, quantity = 2)
+                )
+            )
+        ).andReturn()
             .response
             .contentAsString
 
@@ -135,4 +119,11 @@ class CreateOrderControllerTest {
             )
         )
     }
+
+    private fun request(items: List<OrderItemDTO>) = CreateOrderDTO(
+        order = OrderDTO(
+            items = items
+        )
+    )
+
 }
