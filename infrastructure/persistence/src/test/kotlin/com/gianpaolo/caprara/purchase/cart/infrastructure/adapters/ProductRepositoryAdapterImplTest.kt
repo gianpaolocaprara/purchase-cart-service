@@ -2,6 +2,7 @@ package com.gianpaolo.caprara.purchase.cart.infrastructure.adapters
 
 import com.gianpaolo.caprara.purchase.cart.domain.exceptions.DataNotFoundException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
+import com.gianpaolo.caprara.purchase.cart.infrastructure.entities.ProductEntity
 import com.gianpaolo.caprara.purchase.cart.infrastructure.repositories.ProductRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -26,7 +27,7 @@ class ProductRepositoryAdapterImplTest {
     @Test
     fun `get by id call repository as expected`() {
         every { productRepository.findById(1) } returns Optional.of(
-            Product(
+            ProductEntity(
                 id = 1,
                 name = "Product 1",
                 price = 10.0,
@@ -42,7 +43,7 @@ class ProductRepositoryAdapterImplTest {
     @Test
     fun `get by id return value as expected`() {
         every { productRepository.findById(1) } returns Optional.of(
-            Product(
+            ProductEntity(
                 id = 1,
                 name = "Product 1",
                 price = 10.0,
