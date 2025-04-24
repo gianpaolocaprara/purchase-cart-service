@@ -5,7 +5,7 @@ import com.gianpaolo.caprara.purchase.cart.domain.usecases.CreateOrderUseCase
 import com.gianpaolo.caprara.purchase.cart.dtos.requests.CreateOrderDTO
 import com.gianpaolo.caprara.purchase.cart.dtos.requests.toModel
 import com.gianpaolo.caprara.purchase.cart.dtos.responses.CreateOrderDTOResponse
-import com.gianpaolo.caprara.purchase.cart.dtos.responses.ProductOrderDTOResponse
+import com.gianpaolo.caprara.purchase.cart.dtos.responses.OrderItemDTOResponse
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -36,11 +36,11 @@ class CreateOrderController(
             CreateOrderDTOResponse(
                 id = createdOrder.id!!,
                 items = createdOrder.items.map {
-                    ProductOrderDTOResponse(
-                        id = it.id,
+                    OrderItemDTOResponse(
+                        id = it.product.id,
                         quantity = it.quantity,
-                        price = it.price!!,
-                        vat = it.vat!!
+                        price = it.product.price!!,
+                        vat = it.product.vat!!
                     )
                 },
                 vat = createdOrder.vat!!,

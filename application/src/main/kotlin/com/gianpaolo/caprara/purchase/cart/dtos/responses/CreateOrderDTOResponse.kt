@@ -9,5 +9,5 @@ class CreateOrderDTOResponse(
     val price: Double,
     @JsonProperty("order_vat")
     val vat: Double,
-    val items: List<ProductOrderDTOResponse>
+    val items: List<OrderItemDTOResponse>
 )

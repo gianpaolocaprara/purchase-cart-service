@@ -1,5 +1,6 @@
 package com.gianpaolo.caprara.purchase.cart.dtos.requests
 
+import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -10,8 +11,8 @@ class CreateOrderDTOTest {
         val createOrderDTO = CreateOrderDTO(
             order = OrderDTO(
                 items = listOf(
-                    ProductDTO("1", 1),
-                    ProductDTO("2", 2)
+                    OrderItemDTO("1", 1),
+                    OrderItemDTO("2", 2)
                 )
             )
         )
@@ -21,5 +22,23 @@ class CreateOrderDTOTest {
         assertEquals(createOrderDTO.order.items[0].quantity, 1)
         assertEquals(createOrderDTO.order.items[1].productId, "2")
         assertEquals(createOrderDTO.order.items[1].quantity, 2)
+    }
+
+    @Test
+    fun `create order dto to model expected values`() {
+        val order: Order = CreateOrderDTO(
+            order = OrderDTO(
+                items = listOf(
+                    OrderItemDTO("1", 1),
+                    OrderItemDTO("2", 2)
+                )
+            )
+        ).toModel()
+
+        assertEquals(order.items.size, 2)
+        assertEquals(order.items[0].product.id, "1")
+        assertEquals(order.items[0].quantity, 1)
+        assertEquals(order.items[1].product.id, "2")
+        assertEquals(order.items[1].quantity, 2)
     }
 }

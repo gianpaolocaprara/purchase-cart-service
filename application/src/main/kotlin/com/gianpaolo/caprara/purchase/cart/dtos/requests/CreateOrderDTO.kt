@@ -1,7 +1,8 @@
 package com.gianpaolo.caprara.purchase.cart.dtos.requests
 
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
-import com.gianpaolo.caprara.purchase.cart.domain.models.ProductOrder
+import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
+import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 
 class CreateOrderDTO(
     val order: OrderDTO
@@ -9,8 +10,8 @@ class CreateOrderDTO(
 
 fun CreateOrderDTO.toModel(): Order = Order(
     items = order.items.map {
-        ProductOrder(
-            id = it.productId,
+        OrderItem(
+            product = Product(id = it.productId),
             quantity = it.quantity
         )
     }

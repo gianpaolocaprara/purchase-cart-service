@@ -5,11 +5,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
-import com.gianpaolo.caprara.purchase.cart.domain.models.ProductOrder
+import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
+import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.usecases.CreateOrderUseCase
 import com.gianpaolo.caprara.purchase.cart.dtos.requests.CreateOrderDTO
 import com.gianpaolo.caprara.purchase.cart.dtos.requests.OrderDTO
-import com.gianpaolo.caprara.purchase.cart.dtos.requests.ProductDTO
+import com.gianpaolo.caprara.purchase.cart.dtos.requests.OrderItemDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -39,7 +40,7 @@ class CreateOrderControllerTest {
         val createOrderDTO = CreateOrderDTO(
             order = OrderDTO(
                 items = listOf(
-                    ProductDTO("1", 1)
+                    OrderItemDTO("1", 1)
                 )
             )
         )
@@ -54,9 +55,9 @@ class CreateOrderControllerTest {
         val createOrderDTO = CreateOrderDTO(
             order = OrderDTO(
                 items = listOf(
-                    ProductDTO("1", 1),
-                    ProductDTO("2", 5),
-                    ProductDTO("3", 2)
+                    OrderItemDTO("1", 1),
+                    OrderItemDTO("2", 5),
+                    OrderItemDTO("3", 2)
                 )
             )
         )
@@ -67,9 +68,9 @@ class CreateOrderControllerTest {
 
         verify(exactly = 1) { createOrderUseCase.apply(
             Order(items = listOf(
-                ProductOrder(id = "1", quantity = 1),
-                ProductOrder(id = "2", quantity = 5),
-                ProductOrder(id = "3", quantity = 2),
+                OrderItem(product = Product(id = "1"), quantity = 1),
+                OrderItem(product = Product(id = "2"), quantity = 5),
+                OrderItem(product = Product(id = "3"), quantity = 2),
             ))
         ) }
     }
@@ -79,18 +80,18 @@ class CreateOrderControllerTest {
         val createOrderDTO = CreateOrderDTO(
             order = OrderDTO(
                 items = listOf(
-                    ProductDTO("1", 1),
-                    ProductDTO("2", 5),
-                    ProductDTO("3", 2)
+                    OrderItemDTO("1", 1),
+                    OrderItemDTO("2", 5),
+                    OrderItemDTO("3", 2)
                 )
             )
         )
         every { createOrderUseCase.apply(any()) } returns Order(
             id = 123,
             items = listOf(
-                ProductOrder(id = "1", name = "Product 1", quantity = 1, price = 20.0, vat = 10.5),
-                ProductOrder(id = "2", name = "Product 2", quantity = 5, price = 15.0, vat = 3.0),
-                ProductOrder(id = "3", name = "Product 3", quantity = 2, price = 30.0, vat = 22.0),
+                OrderItem(product = Product(id = "1", name = "Product 1", price = 20.0, vat = 10.5), quantity = 1),
+                OrderItem(product = Product(id = "2", name = "Product 2", price = 15.0, vat = 3.0), quantity = 5),
+                OrderItem(product = Product(id = "3", name = "Product 3", price = 30.0, vat = 22.0), quantity = 2),
             ),
             price = 65.0,
             vat = 35.5

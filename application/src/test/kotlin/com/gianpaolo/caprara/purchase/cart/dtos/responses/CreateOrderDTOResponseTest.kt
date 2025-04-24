@@ -12,8 +12,8 @@ class CreateOrderDTOResponseTest {
             price = 10.0,
             vat = 22.0,
             items = listOf(
-                ProductOrderDTOResponse("1", 1, 10.0, 22.0),
-                ProductOrderDTOResponse("2", 2, 12.0, 10.5)
+                OrderItemDTOResponse("1", 1, 10.0, 22.0),
+                OrderItemDTOResponse("2", 2, 12.0, 10.5)
             )
         )
 
