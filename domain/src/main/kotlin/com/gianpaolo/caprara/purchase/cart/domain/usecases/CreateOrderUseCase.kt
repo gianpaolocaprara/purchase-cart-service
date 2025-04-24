@@ -5,12 +5,12 @@ import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterExc
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
-import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
+import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepositoryAdapter
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepositoryAdapter
 
 class CreateOrderUseCase(
     private val productRepositoryAdapter: ProductRepositoryAdapter,
-    private val orderRepository: OrderRepository
+    private val orderRepositoryAdapter: OrderRepositoryAdapter
 ) {
     fun apply(order: Order): Order {
         val newOrderItemList: List<OrderItem> =
@@ -23,7 +23,7 @@ class CreateOrderUseCase(
             price = newOrderItemList.sumOf { it.product.price!! },
             vat = newOrderItemList.sumOf { it.product.vat!! }
         )
-        return this.orderRepository.save(newOrder)
+        return this.orderRepositoryAdapter.save(newOrder)
     }
 
     private fun findProduct(productId: Int): Product = try {
