@@ -1,0 +1,11 @@
+package com.gianpaolo.caprara.purchase.cart.dtos.responses
+
+import com.fasterxml.jackson.annotation.JsonProperty
+
+class ProductOrderDTOResponse(
+    @JsonProperty("product_id")
+    val id: String,
+    val quantity: Int,
+    val price: Double,
+    val vat: Double
+)

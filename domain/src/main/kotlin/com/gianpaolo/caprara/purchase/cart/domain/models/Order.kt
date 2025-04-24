@@ -1,8 +1,8 @@
 package com.gianpaolo.caprara.purchase.cart.domain.models
 
 data class Order(
-    val id: Int,
+    val id: Int? = null,
     val items: List<ProductOrder>,
-    val price: Double,
-    val vat: Double
+    val price: Double? = null,
+    val vat: Double? = null
 )
