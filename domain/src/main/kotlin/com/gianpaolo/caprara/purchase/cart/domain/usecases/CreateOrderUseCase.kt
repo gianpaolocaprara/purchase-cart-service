@@ -1,6 +1,6 @@
 package com.gianpaolo.caprara.purchase.cart.domain.usecases
 
-import com.gianpaolo.caprara.purchase.cart.domain.exceptions.ProductNotFoundException
+import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
@@ -17,7 +17,7 @@ class CreateOrderUseCase {
             order.items.map { item ->
                 val product: Product = existingProducts
                     .find { product -> item.product.id == product.id }
-                    ?: throw ProductNotFoundException("Product with id ${item.product.id} not found.")
+                    ?: throw InvalidParameterException("Product with id ${item.product.id} not found.")
                 OrderItem(
                     product = Product(
                         id = product.id,

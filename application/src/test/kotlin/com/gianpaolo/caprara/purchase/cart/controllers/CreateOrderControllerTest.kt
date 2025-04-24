@@ -3,6 +3,7 @@ package com.gianpaolo.caprara.purchase.cart.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
@@ -29,7 +30,7 @@ class CreateOrderControllerTest {
     fun setUp() {
         createOrderUseCase = mockk(relaxed = true)
         controller = CreateOrderController(createOrderUseCase)
-        mvc = MockMvcBuilders.standaloneSetup(controller).build()
+        mvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ErrorController()).build()
     }
 
     @Test
@@ -120,10 +121,19 @@ class CreateOrderControllerTest {
         )
     }
 
-    private fun request(items: List<OrderItemDTO>) = CreateOrderDTO(
-        order = OrderDTO(
-            items = items
-        )
-    )
+    @Test
+    fun `create order expected bad request if a product not found`() {
+        every { createOrderUseCase.apply(any()) } throws InvalidParameterException("Product with id 3 not found.")
+        mvc.post(
+            path = ordersPath,
+            entity = request(items = listOf(OrderItemDTO(productId = 3, quantity = 2)))
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Product with id 3 not found.") }
+        }
+    }
+
+    private fun request(items: List<OrderItemDTO>) = CreateOrderDTO(order = OrderDTO(items = items))
 
 }

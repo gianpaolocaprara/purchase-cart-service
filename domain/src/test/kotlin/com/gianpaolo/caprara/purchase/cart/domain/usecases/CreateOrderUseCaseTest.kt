@@ -1,6 +1,6 @@
 package com.gianpaolo.caprara.purchase.cart.domain.usecases
 
-import com.gianpaolo.caprara.purchase.cart.domain.exceptions.ProductNotFoundException
+import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
@@ -55,7 +55,7 @@ class CreateOrderUseCaseTest {
                 OrderItem(product = Product(id = 5), quantity = 2)
             )
         )
-        val assertThrows = assertThrows<ProductNotFoundException> { createOrderUseCase.apply(order = order) }
+        val assertThrows = assertThrows<InvalidParameterException> { createOrderUseCase.apply(order = order) }
         assertThat(assertThrows.message).isEqualTo("Product with id 5 not found.")
     }
 }
