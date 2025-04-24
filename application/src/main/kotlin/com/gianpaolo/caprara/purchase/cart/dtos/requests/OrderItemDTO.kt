@@ -4,6 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 class OrderItemDTO(
     @field:JsonProperty("product_id")
-    val productId: String,
+    val productId: Int,
     val quantity: Int
 )

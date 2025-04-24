@@ -11,16 +11,16 @@ class CreateOrderDTOTest {
         val createOrderDTO = CreateOrderDTO(
             order = OrderDTO(
                 items = listOf(
-                    OrderItemDTO("1", 1),
-                    OrderItemDTO("2", 2)
+                    OrderItemDTO(productId = 1, quantity = 1),
+                    OrderItemDTO(productId = 2, quantity = 2)
                 )
             )
         )
 
         assertEquals(createOrderDTO.order.items.size, 2)
-        assertEquals(createOrderDTO.order.items[0].productId, "1")
+        assertEquals(createOrderDTO.order.items[0].productId, 1)
         assertEquals(createOrderDTO.order.items[0].quantity, 1)
-        assertEquals(createOrderDTO.order.items[1].productId, "2")
+        assertEquals(createOrderDTO.order.items[1].productId, 2)
         assertEquals(createOrderDTO.order.items[1].quantity, 2)
     }
 
@@ -29,16 +29,16 @@ class CreateOrderDTOTest {
         val order: Order = CreateOrderDTO(
             order = OrderDTO(
                 items = listOf(
-                    OrderItemDTO("1", 1),
-                    OrderItemDTO("2", 2)
+                    OrderItemDTO(productId = 1, quantity = 1),
+                    OrderItemDTO(productId = 2, quantity = 2)
                 )
             )
         ).toModel()
 
         assertEquals(order.items.size, 2)
-        assertEquals(order.items[0].product.id, "1")
+        assertEquals(order.items[0].product.id, 1)
         assertEquals(order.items[0].quantity, 1)
-        assertEquals(order.items[1].product.id, "2")
+        assertEquals(order.items[1].product.id, 2)
         assertEquals(order.items[1].quantity, 2)
     }
 }

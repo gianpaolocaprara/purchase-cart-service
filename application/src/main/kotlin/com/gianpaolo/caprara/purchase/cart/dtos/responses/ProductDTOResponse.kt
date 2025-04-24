@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 class OrderItemDTOResponse(
     @JsonProperty("product_id")
-    val id: String,
+    val id: Int,
     val quantity: Int,
     val price: Double,
     val vat: Double
