@@ -13,25 +13,30 @@ class CreateOrderUseCase {
             Product(id = 3, price = 5.0, vat = 0.50),
         )
 
-        val newOrderItem: List<OrderItem> =
+        val newOrderItemList: List<OrderItem> =
             order.items.map { item ->
-                val product: Product = existingProducts
-                    .find { product -> item.product.id == product.id }
-                    ?: throw InvalidParameterException("Product with id ${item.product.id} not found.")
-                OrderItem(
-                    product = Product(
-                        id = product.id,
-                        price = product.price!! * item.quantity,
-                        vat = product.vat!! * item.quantity
-                    ),
-                    quantity = item.quantity
-                )
+                val product: Product = findProduct(existingProducts = existingProducts, productId = item.product.id)
+                createOrderItem(product = product, quantity = item.quantity)
             }
         return Order(
             id = 111,
-            items = newOrderItem,
-            price = newOrderItem.sumOf { it.product.price!! },
-            vat = newOrderItem.sumOf { it.product.vat!! }
+            items = newOrderItemList,
+            price = newOrderItemList.sumOf { it.product.price!! },
+            vat = newOrderItemList.sumOf { it.product.vat!! }
         )
     }
+
+    private fun findProduct(existingProducts: List<Product>, productId: Int): Product =
+        existingProducts.find { product -> productId == product.id }
+            ?: throw InvalidParameterException("Product with id $productId not found.")
+
+    private fun createOrderItem(product: Product, quantity: Int): OrderItem =
+        OrderItem(
+            product = Product(
+                id = product.id,
+                price = product.price!! * quantity,
+                vat = product.vat!! * quantity
+            ),
+            quantity = quantity
+        )
 }
