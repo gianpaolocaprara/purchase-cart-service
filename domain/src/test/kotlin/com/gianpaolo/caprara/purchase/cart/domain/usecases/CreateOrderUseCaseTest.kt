@@ -4,22 +4,32 @@ import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterExc
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
+import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class CreateOrderUseCaseTest {
-
     private lateinit var createOrderUseCase: CreateOrderUseCase
+    private lateinit var productRepository: ProductRepository
 
     @BeforeEach
     fun `set up`() {
-        createOrderUseCase = CreateOrderUseCase()
+        productRepository = mockk(relaxed = true)
+        createOrderUseCase = CreateOrderUseCase(productRepository = productRepository)
     }
 
     @Test
     fun `test apply should return expected order`() {
+        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepository.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
+        every { productRepository.findById(id = 3) } returns Product(id = 3, price = 5.0, vat = 0.50)
+
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1), quantity = 1),
@@ -49,6 +59,9 @@ class CreateOrderUseCaseTest {
 
     @Test
     fun `test apply should throw exception when product not found`() {
+        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepository.findById(id = 5) } throws Exception("Product with id 5 not found.")
+
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1), quantity = 1),
@@ -57,5 +70,24 @@ class CreateOrderUseCaseTest {
         )
         val assertThrows = assertThrows<InvalidParameterException> { createOrderUseCase.apply(order = order) }
         assertThat(assertThrows.message).isEqualTo("Product with id 5 not found.")
+    }
+
+    @Test
+    fun `test apply should call product repository in order to retrieve products`() {
+        every { productRepository.findById(id = 1) } returns Product(id = 1, price = 20.0, vat = 0.20)
+        every { productRepository.findById(id = 2) } returns Product(id = 2, price = 3.0, vat = 0.30)
+
+        val order = Order(
+            items = listOf(
+                OrderItem(product = Product(id = 1), quantity = 1),
+                OrderItem(product = Product(id = 2), quantity = 2)
+            )
+        )
+        createOrderUseCase.apply(order = order)
+
+        verifyOrder {
+            productRepository.findById(1)
+            productRepository.findById(2)
+        }
     }
 }

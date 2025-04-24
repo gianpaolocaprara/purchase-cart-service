@@ -4,18 +4,15 @@ import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterExc
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
+import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
 
-class CreateOrderUseCase {
+class CreateOrderUseCase(
+    private val productRepository: ProductRepository
+) {
     fun apply(order: Order): Order {
-        val existingProducts: List<Product> = listOf(
-            Product(id = 1, price = 20.0, vat = 0.20),
-            Product(id = 2, price = 3.0, vat = 0.30),
-            Product(id = 3, price = 5.0, vat = 0.50),
-        )
-
         val newOrderItemList: List<OrderItem> =
             order.items.map { item ->
-                val product: Product = findProduct(existingProducts = existingProducts, productId = item.product.id)
+                val product: Product = findProduct(productId = item.product.id)
                 createOrderItem(product = product, quantity = item.quantity)
             }
         return Order(
@@ -26,9 +23,11 @@ class CreateOrderUseCase {
         )
     }
 
-    private fun findProduct(existingProducts: List<Product>, productId: Int): Product =
-        existingProducts.find { product -> productId == product.id }
-            ?: throw InvalidParameterException("Product with id $productId not found.")
+    private fun findProduct(productId: Int): Product = try {
+        this.productRepository.findById(productId)
+    } catch (_: Exception) {
+        throw InvalidParameterException("Product with id $productId not found.")
+    }
 
     private fun createOrderItem(product: Product, quantity: Int): OrderItem =
         OrderItem(
