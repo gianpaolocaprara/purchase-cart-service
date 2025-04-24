@@ -4,10 +4,12 @@ import com.gianpaolo.caprara.purchase.cart.domain.exceptions.InvalidParameterExc
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
+import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
 
 class CreateOrderUseCase(
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    private val orderRepository: OrderRepository
 ) {
     fun apply(order: Order): Order {
         val newOrderItemList: List<OrderItem> =
@@ -15,12 +17,12 @@ class CreateOrderUseCase(
                 val product: Product = findProduct(productId = item.product.id)
                 createOrderItem(product = product, quantity = item.quantity)
             }
-        return Order(
-            id = 111,
+        val newOrder = Order(
             items = newOrderItemList,
             price = newOrderItemList.sumOf { it.product.price!! },
             vat = newOrderItemList.sumOf { it.product.vat!! }
         )
+        return this.orderRepository.save(newOrder)
     }
 
     private fun findProduct(productId: Int): Product = try {
