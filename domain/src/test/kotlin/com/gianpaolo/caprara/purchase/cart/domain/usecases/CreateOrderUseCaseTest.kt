@@ -1,11 +1,13 @@
 package com.gianpaolo.caprara.purchase.cart.domain.usecases
 
+import com.gianpaolo.caprara.purchase.cart.domain.exceptions.ProductNotFoundException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class CreateOrderUseCaseTest {
 
@@ -43,5 +45,17 @@ class CreateOrderUseCaseTest {
         assertThat(orderCreated.items[2].product.price).isEqualTo(5.00)
         assertThat(orderCreated.items[2].product.vat).isEqualTo(0.5)
         assertThat(orderCreated.items[2].quantity).isEqualTo(1)
+    }
+
+    @Test
+    fun `test apply should throw exception when product not found`() {
+        val order = Order(
+            items = listOf(
+                OrderItem(product = Product(id = 1), quantity = 1),
+                OrderItem(product = Product(id = 5), quantity = 2)
+            )
+        )
+        val assertThrows = assertThrows<ProductNotFoundException> { createOrderUseCase.apply(order = order) }
+        assertThat(assertThrows.message).isEqualTo("Product with id 5 not found.")
     }
 }
