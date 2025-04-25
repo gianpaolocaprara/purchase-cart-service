@@ -22,6 +22,7 @@ configurations {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":infrastructure:persistence"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 class CreateOrderController(
     private val createOrderUseCase: CreateOrderUseCase
 ) {
-
     @PostMapping(
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         produces = [MediaType.APPLICATION_JSON_VALUE]
