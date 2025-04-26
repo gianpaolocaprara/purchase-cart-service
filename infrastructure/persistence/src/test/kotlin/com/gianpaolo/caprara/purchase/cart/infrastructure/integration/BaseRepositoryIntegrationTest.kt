@@ -21,7 +21,7 @@ abstract class BaseRepositoryIntegrationTest {
 
             statement.execute(
                 """
-            CREATE TABLE products (
+            CREATE TABLE IF NOT EXISTS products (
                 id INT PRIMARY KEY,
                 name VARCHAR(255),
                 price DOUBLE,
@@ -32,7 +32,7 @@ abstract class BaseRepositoryIntegrationTest {
 
             statement.execute(
                 """
-            CREATE TABLE orders (
+            CREATE TABLE IF NOT EXISTS orders (
                 id INT PRIMARY KEY,
                 price DOUBLE,
                 vat DOUBLE
@@ -42,7 +42,7 @@ abstract class BaseRepositoryIntegrationTest {
 
             statement.execute(
                 """
-            CREATE TABLE order_items (
+            CREATE TABLE IF NOT EXISTS order_items (
                 order_id INT,
                 product_id INT,
                 price DOUBLE,
