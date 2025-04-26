@@ -5,11 +5,7 @@ pluginManagement {
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
-
-rootProject.name = "purchase.cart"
+rootProject.name = "purchase-cart-service"
+include(":application")
 include(":domain")
-include("application")
-include("infrastructure:persistence")
+include(":infrastructure:persistence")

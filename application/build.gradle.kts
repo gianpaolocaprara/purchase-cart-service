@@ -1,8 +1,5 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
-tasks.named<Jar>("jar") {
-    archiveBaseName.set("purchase-cart-service")
-}
 tasks.named<BootJar>("bootJar") {
     archiveBaseName.set("purchase-cart-service")
 }
