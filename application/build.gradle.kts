@@ -13,22 +13,19 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
 }
 
-configurations {
-    implementation {
-        exclude(module = "spring-boot-starter-tomcat")
-        exclude("com.squareup.okhttp3:okhttp")
-    }
-}
-
 dependencies {
     implementation(project(":domain"))
     implementation(project(":infrastructure:persistence"))
+
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

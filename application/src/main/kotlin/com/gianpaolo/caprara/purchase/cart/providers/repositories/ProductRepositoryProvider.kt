@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Scope
 import java.sql.Connection
 
 @Configuration
-class ProductRepositoryProvider(
-    private val connection: Connection
-) {
+class ProductRepositoryProvider(private val connection: Connection) {
     @Bean
     @Scope(SCOPE_SINGLETON)
     fun productRepository() = ProductRepositoryImpl(connection)
