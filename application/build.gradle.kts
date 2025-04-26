@@ -14,15 +14,12 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":infrastructure:persistence"))
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(libs.spring.boot.web)
+    implementation(libs.spring.boot.jdbc)
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.kotlin.reflect)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation(libs.spring.boot.test)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

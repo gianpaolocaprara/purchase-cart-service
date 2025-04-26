@@ -20,9 +20,9 @@ subprojects {
     apply(plugin = "kotlin")
 
     dependencies {
-        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-        testImplementation("org.assertj:assertj-core:3.24.2")
-        testImplementation("io.mockk:mockk:1.13.8")
+        testImplementation(rootProject.libs.junit5)
+        testImplementation(rootProject.libs.assertj.core)
+        testImplementation(rootProject.libs.mockk)
     }
 
     tasks.test {

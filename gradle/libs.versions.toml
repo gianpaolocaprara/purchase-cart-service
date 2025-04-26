@@ -1,0 +1,19 @@
+[versions]
+kotlin = "1.9.25"
+spring_boot = "3.4.4"
+h2 = "2.1.214"
+assertj = "3.24.2"
+mockk = "1.13.8"
+jackson = "2.15.2"
+
+[libraries]
+kotlin_stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+assertj_core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+spring_boot_web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring_boot" }
+spring_boot_jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring_boot" }
+spring_boot_test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring_boot" }
+jackson_module_kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }

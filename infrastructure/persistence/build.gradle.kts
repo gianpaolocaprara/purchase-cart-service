@@ -4,5 +4,5 @@ tasks.named<Jar>("jar") {
 
 dependencies {
     implementation(project(":domain"))
-    implementation("com.h2database:h2:2.1.214")
+    implementation(libs.h2)
 }
