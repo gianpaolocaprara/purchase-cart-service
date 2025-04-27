@@ -1,2 +1,2 @@
 #!/bin/sh
-./graldew bootRun
+./gradlew bootRun
