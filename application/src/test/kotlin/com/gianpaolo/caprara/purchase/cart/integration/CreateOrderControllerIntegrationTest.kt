@@ -102,6 +102,7 @@ class CreateOrderControllerIntegrationTest : AbstractBaseIntegrationTest() {
                 )
             )
         )
+
         mvc.post(
             path = ordersPath,
             entity = request
@@ -109,6 +110,62 @@ class CreateOrderControllerIntegrationTest : AbstractBaseIntegrationTest() {
             status { isBadRequest() }
             jsonPath("$.code") { value("INVALID_DATA") }
             jsonPath("$.message") { value("Product with id 200 not found.") }
+        }
+    }
+
+    @Test
+    fun `create a new order expected bad request if order item list is empty`() {
+        val request = CreateOrderDTO(order = OrderDTO(items = emptyList()))
+
+        mvc.post(
+            path = ordersPath,
+            entity = request
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Order must contain at least one item.") }
+        }
+    }
+
+    @Test
+    fun `create a new order expected bad request if a order item has quantity 0`() {
+        val request = CreateOrderDTO(
+            order = OrderDTO(
+                items = listOf(
+                    OrderItemDTO(productId = 1, quantity = 1),
+                    OrderItemDTO(productId = 2, quantity = 0)
+                )
+            )
+        )
+
+        mvc.post(
+            path = ordersPath,
+            entity = request
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Order must contain only positive quantities.") }
+        }
+    }
+
+    @Test
+    fun `create a new order expected bad request if a order item has negative quantity`() {
+        val request = CreateOrderDTO(
+            order = OrderDTO(
+                items = listOf(
+                    OrderItemDTO(productId = 1, quantity = 1),
+                    OrderItemDTO(productId = 2, quantity = -1)
+                )
+            )
+        )
+
+        mvc.post(
+            path = ordersPath,
+            entity = request
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Order must contain only positive quantities.") }
         }
     }
 }

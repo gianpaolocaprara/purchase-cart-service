@@ -7,16 +7,19 @@ import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import com.gianpaolo.caprara.purchase.cart.domain.validators.Validator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class CreateOrderUseCase(
     private val productRepository: ProductRepository,
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val validator: Validator<Order>
 ) {
     private val logger: Logger = LoggerFactory.getLogger(CreateOrderUseCase::class.java)
 
     fun apply(order: Order): Order {
+        validator.validate(order)
         return this.orderRepository.save(order = createOrder(orderItems = createOrderItems(orderItems = order.items)))
     }
 

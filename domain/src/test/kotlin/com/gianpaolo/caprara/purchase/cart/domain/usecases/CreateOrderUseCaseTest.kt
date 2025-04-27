@@ -7,6 +7,7 @@ import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import com.gianpaolo.caprara.purchase.cart.domain.validators.Validator
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -17,14 +18,17 @@ class CreateOrderUseCaseTest {
     private lateinit var createOrderUseCase: CreateOrderUseCase
     private lateinit var productRepository: ProductRepository
     private lateinit var orderRepository: OrderRepository
+    private lateinit var validator: Validator<Order>
 
     @BeforeEach
     fun `set up`() {
         productRepository = mockk(relaxed = true)
         orderRepository = mockk(relaxed = true)
+        validator = mockk(relaxed = true)
         createOrderUseCase = CreateOrderUseCase(
             productRepository = productRepository,
-            orderRepository = orderRepository
+            orderRepository = orderRepository,
+            validator = validator
         )
     }
 
@@ -131,5 +135,19 @@ class CreateOrderUseCaseTest {
         val assertThrows = assertThrows<InvalidParameterException> { createOrderUseCase.apply(order = order) }
 
         assertThat(assertThrows.message).isEqualTo("Product with id 5 not found.")
+    }
+
+    @Test
+    fun `test apply should throw exception if validation not passed`() {
+        every { validator.validate(any()) } throws InvalidParameterException("Exception during validation.")
+        val order = Order(
+            items = listOf(
+                OrderItem(product = Product(id = 1), quantity = -1)
+            )
+        )
+
+        val assertThrows = assertThrows<InvalidParameterException> { createOrderUseCase.apply(order = order) }
+
+        assertThat(assertThrows.message).isEqualTo("Exception during validation.")
     }
 }

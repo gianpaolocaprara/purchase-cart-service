@@ -136,6 +136,48 @@ class CreateOrderControllerTest {
         }
     }
 
+    @Test
+    fun `create order expected bad request if order item list is empty`() {
+        every { createOrderUseCase.apply(any()) } throws InvalidParameterException("Order must contain at least one item.")
+
+        mvc.post(
+            path = ordersPath,
+            entity = request(items = listOf(OrderItemDTO(productId = 3, quantity = 2)))
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Order must contain at least one item.") }
+        }
+    }
+
+    @Test
+    fun `create order expected bad request if an order item has quantity 0`() {
+        every { createOrderUseCase.apply(any()) } throws InvalidParameterException("Order must contain only positive quantities.")
+
+        mvc.post(
+            path = ordersPath,
+            entity = request(items = listOf(OrderItemDTO(productId = 1, quantity = 0)))
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Order must contain only positive quantities.") }
+        }
+    }
+
+    @Test
+    fun `create order expected bad request if an order item has negative quantity`() {
+        every { createOrderUseCase.apply(any()) } throws InvalidParameterException("Order must contain only positive quantities.")
+
+        mvc.post(
+            path = ordersPath,
+            entity = request(items = listOf(OrderItemDTO(productId = 1, quantity = -1)))
+        ).andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code") { value("INVALID_DATA") }
+            jsonPath("$.message") { value("Order must contain only positive quantities.") }
+        }
+    }
+
     private fun request(items: List<OrderItemDTO>) = CreateOrderDTO(order = OrderDTO(items = items))
 
 }
