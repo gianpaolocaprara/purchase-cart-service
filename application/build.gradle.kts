@@ -16,8 +16,10 @@ dependencies {
 
     implementation(libs.spring.boot.web)
     implementation(libs.spring.boot.jdbc)
+    implementation(libs.spring.boot.starter.validation)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
+    implementation(libs.openapi)
 
     testImplementation(libs.spring.boot.test)
 

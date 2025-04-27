@@ -6,6 +6,7 @@ assertj = "3.24.2"
 mockk = "1.13.8"
 jackson = "2.15.2"
 slf4j = "2.0.10"
+openapi = "2.6.0"
 
 [libraries]
 kotlin_stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -16,6 +17,8 @@ h2 = { module = "com.h2database:h2", version.ref = "h2" }
 spring_boot_web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring_boot" }
 spring_boot_jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring_boot" }
 spring_boot_test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring_boot" }
+spring_boot_starter_validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring_boot" }
 jackson_module_kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "openapi" }
