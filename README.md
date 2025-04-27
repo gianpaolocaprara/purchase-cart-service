@@ -1,31 +1,71 @@
 # Purchase Cart Service
 
-This is test service for purchase cart
+This is a test service for managing a purchase cart.
 
 ## Requirements
 
-- Docker installed
+- Docker
 
-## Build
+## Build Docker Image
 
-For build docker image you must run:
+To build the Docker image, run:
 
-- docker build -t purchase-cart-service .
+```bash
+docker build -t purchase-cart-service .
+```
 
-## Build project
+If you don't have execution permissions for the scripts in the scripts folder, run:
 
-You must build project before run, with command:
+```bash
+chmod +x ./scripts/build.sh
+```
 
-- docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt purchase-cart-service ./scripts/build.sh
+```bash
+chmod +x ./scripts/test.sh
+```
 
-## Run tests
+```bash
+chmod +x ./scripts/run.sh
+```
 
-If you want run tests, you must run:
+## Build the project
 
-- docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt purchase-cart-service ./scripts/test.sh
+You can build the project using the following command:
 
-## Run application
+```bash
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt purchase-cart-service ./scripts/build.sh
+```
 
-If you want run application, you must run:
+## Run Tests
 
-- docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt purchase-cart-service ./scripts/run.sh
+To run the tests:
+
+```bash
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt purchase-cart-service ./scripts/test.sh
+```
+
+## Run the Application
+
+To start the application:
+
+```bash
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt purchase-cart-service ./scripts/run.sh
+```
+
+The application will be available at http://localhost:9090/
+
+## Available Endpoints
+- POST /api/v1/orders
+
+## Documentation
+You can access the Swagger documentation at:
+http://localhost:9090/swagger-ui/index.html
+
+## H2 Console
+You can access the H2 database console at:
+http://localhost:9090/h2-console/
+
+Use the following settings:
+- **JDBC URL**: jdbc:h2:mem:purchase-cart-service
+- **Username**: admin
+- **Password**: (leave blank)
