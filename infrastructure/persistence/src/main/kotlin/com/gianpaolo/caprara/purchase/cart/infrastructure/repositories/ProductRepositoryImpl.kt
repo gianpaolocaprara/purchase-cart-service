@@ -8,8 +8,8 @@ import java.sql.Connection
 class ProductRepositoryImpl(private val connection: Connection) : ProductRepository {
 
     companion object {
-        const val INSERT_PRODUCT_SQL = "INSERT INTO products (id, name, price, vat) VALUES (?, ?, ?, ?)"
-        const val SELECT_PRODUCT_SQL = "SELECT * FROM products WHERE id = ?"
+        private const val INSERT_PRODUCT_SQL = "INSERT INTO products (id, name, price, vat) VALUES (?, ?, ?, ?)"
+        private const val SELECT_PRODUCT_SQL = "SELECT * FROM products WHERE id = ?"
     }
 
     override fun save(product: Product) {

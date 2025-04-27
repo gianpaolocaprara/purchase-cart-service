@@ -23,13 +23,13 @@ class OrderRepositoryIntegrationTest : BaseRepositoryIntegrationTest() {
     }
 
     @Test
-    fun `save expected id is not null`() {
-        productRepository.save(Product(id = 1, name = "Product 1", price = 1.0, vat = 0.10))
-        productRepository.save(Product(id = 2, name = "Product 2", price = 2.0, vat = 0.20))
+    fun `save expected id is not null and not zero`() {
+        productRepository.save(Product(id = 1, name = "Product 1", price = 1.00, vat = 0.10))
+        productRepository.save(Product(id = 2, name = "Product 2", price = 2.00, vat = 0.20))
         val order = Order(
             items = listOf(
-                OrderItem(product = Product(id = 1, price = 1.0, vat = 0.10), quantity = 2),
-                OrderItem(product = Product(id = 2, price = 2.0, vat = 0.20), quantity = 1),
+                OrderItem(product = Product(id = 1, price = 1.00, vat = 0.10), quantity = 2),
+                OrderItem(product = Product(id = 2, price = 2.00, vat = 0.20), quantity = 1),
             ),
             price = 4.00,
             vat = 0.30
@@ -37,15 +37,17 @@ class OrderRepositoryIntegrationTest : BaseRepositoryIntegrationTest() {
 
         val result = repository.save(order)
 
-        assertThat(result.id).isNotNull()
+        assertThat(result.id).isNotNull
+        assertThat(result.id).isNotZero
+        assertThat(result.id).isPositive
     }
 
     @Test
     fun `save throws database exception if product not exists`() {
         val order = Order(
             items = listOf(
-                OrderItem(product = Product(id = 1, price = 1.0, vat = 0.10), quantity = 2),
-                OrderItem(product = Product(id = 2, price = 2.0, vat = 0.20), quantity = 1),
+                OrderItem(product = Product(id = 1, price = 1.00, vat = 0.10), quantity = 2),
+                OrderItem(product = Product(id = 2, price = 2.00, vat = 0.20), quantity = 1),
             ),
             price = 4.00,
             vat = 0.30

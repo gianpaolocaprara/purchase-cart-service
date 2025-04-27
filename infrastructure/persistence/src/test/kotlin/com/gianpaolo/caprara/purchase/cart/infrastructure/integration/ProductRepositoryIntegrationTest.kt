@@ -19,7 +19,7 @@ class ProductRepositoryIntegrationTest : BaseRepositoryIntegrationTest() {
 
     @Test
     fun `find by id expected result`() {
-        val product = Product(id = 1, name = "Test", price = 100.0, vat = 22.0)
+        val product = Product(id = 1, name = "Test", price = 1.00, vat = 0.10)
         repository.save(product)
 
         val found = repository.findById(1)

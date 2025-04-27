@@ -4,14 +4,14 @@ import com.gianpaolo.caprara.purchase.cart.domain.exceptions.DatabaseException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
 import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
-import java.lang.Math.random
 import java.sql.Connection
+import kotlin.random.Random
 
 class OrderRepositoryImpl(private val connection: Connection) : OrderRepository {
 
     companion object {
-        const val INSERT_ORDER_SQL = "INSERT INTO orders (id, price, vat) VALUES (?, ?, ?)"
-        const val INSERT_ORDER_ITEM_SQL =
+        private const val INSERT_ORDER_SQL = "INSERT INTO orders (id, price, vat) VALUES (?, ?, ?)"
+        private const val INSERT_ORDER_ITEM_SQL =
             "INSERT INTO order_items (order_id, product_id, price, vat, quantity) VALUES (?, ?, ?, ?, ?)"
     }
 
@@ -42,7 +42,7 @@ class OrderRepositoryImpl(private val connection: Connection) : OrderRepository 
     }
 
     private fun insertOrder(order: Order): Int {
-        val orderId = random().toInt()
+        val orderId = Random.nextInt(1, Int.MAX_VALUE)
         val orderStatement = connection.prepareStatement(INSERT_ORDER_SQL)
         orderStatement.setInt(1, orderId)
         orderStatement.setDouble(2, order.price!!)

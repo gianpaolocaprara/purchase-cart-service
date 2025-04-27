@@ -62,7 +62,10 @@ class CreateOrderControllerIntegrationTest : AbstractBaseIntegrationTest() {
 
         val objectMapper = ObjectMapper().registerKotlinModule()
         val responseMap: Map<String, Any> = objectMapper.readValue(content = response)
-        assertThat(responseMap["order_id"]).isNotNull
+        val orderId = responseMap["order_id"] as Int
+        assertThat(orderId).isNotNull
+        assertThat(orderId).isNotZero
+        assertThat(orderId).isPositive
         assertThat(responseMap["order_price"]).isEqualTo(12.50)
         assertThat(responseMap["order_vat"]).isEqualTo(1.25)
         assertThat(responseMap["items"]).isEqualTo(
