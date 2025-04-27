@@ -13,24 +13,28 @@ class ProductRepositoryIntegrationTest : BaseRepositoryIntegrationTest() {
     private lateinit var repository: ProductRepositoryImpl
 
     @BeforeEach
-    fun `setup repository`() {
+    fun `setup repository and data`() {
         repository = ProductRepositoryImpl(connection)
+        connection.createStatement().use {
+            it.executeUpdate("INSERT INTO products (id, name, price, vat) VALUES (1, 'Product A', 2.00, 0.20)")
+        }
     }
 
     @Test
     fun `find by id expected result`() {
-        val product = Product(id = 1, name = "Test", price = 1.00, vat = 0.10)
-        repository.save(product)
+        val product: Product = repository.findById(1)
 
-        val found = repository.findById(1)
-
-        assertThat(found).isNotNull
-        assertThat(product).isEqualTo(found)
+        assertThat(product).isNotNull
+        assertThat(product.id).isEqualTo(1)
+        assertThat(product.name).isEqualTo("Product A")
+        assertThat(product.price).isEqualTo(2.00)
+        assertThat(product.vat).isEqualTo(0.20)
     }
 
     @Test
     fun `find by id throws data not found exception if product not exists`() {
-        assertThrows<DataNotFoundException> { repository.findById(1) }
+        val message = assertThrows<DataNotFoundException> { repository.findById(999) }
+        assertThat(message.message).isEqualTo("Product with id 999 not found")
     }
 
 }

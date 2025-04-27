@@ -17,15 +17,17 @@ class OrderRepositoryIntegrationTest : BaseRepositoryIntegrationTest() {
     private lateinit var productRepository: ProductRepositoryImpl
 
     @BeforeEach
-    fun `setup repository`() {
+    fun `setup repository and data`() {
         repository = OrderRepositoryImpl(connection)
         productRepository = ProductRepositoryImpl(connection)
+        connection.createStatement().use {
+            it.executeUpdate("INSERT INTO products (id, name, price, vat) VALUES (1, 'Product 1', 1.00, 0.10)")
+            it.executeUpdate("INSERT INTO products (id, name, price, vat) VALUES (2, 'Product 2', 2.00, 0.20)")
+        }
     }
 
     @Test
     fun `save expected id is not null and not zero`() {
-        productRepository.save(Product(id = 1, name = "Product 1", price = 1.00, vat = 0.10))
-        productRepository.save(Product(id = 2, name = "Product 2", price = 2.00, vat = 0.20))
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1, price = 1.00, vat = 0.10), quantity = 2),
@@ -47,7 +49,7 @@ class OrderRepositoryIntegrationTest : BaseRepositoryIntegrationTest() {
         val order = Order(
             items = listOf(
                 OrderItem(product = Product(id = 1, price = 1.00, vat = 0.10), quantity = 2),
-                OrderItem(product = Product(id = 2, price = 2.00, vat = 0.20), quantity = 1),
+                OrderItem(product = Product(id = 999, price = 2.00, vat = 0.20), quantity = 1),
             ),
             price = 4.00,
             vat = 0.30

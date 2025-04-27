@@ -1,7 +1,6 @@
 package com.gianpaolo.caprara.purchase.cart.infrastructure.repositories
 
 import com.gianpaolo.caprara.purchase.cart.domain.exceptions.DataNotFoundException
-import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -37,20 +36,6 @@ class ProductRepositoryImplTest {
     @AfterEach
     fun `clear all mocks`() {
         clearAllMocks()
-    }
-
-    @Test
-    fun `save should call methods as expected`() {
-        val product = Product(id = 1, name = "Test Product", price = 1.00, vat = 0.10)
-
-        repository.save(product)
-
-        verify(exactly = 1) { connection.prepareStatement(any<String>()) }
-        verify(exactly = 1) { preparedStatement.setInt(1, product.id) }
-        verify(exactly = 1) { preparedStatement.setString(2, product.name) }
-        verify(exactly = 1) { preparedStatement.setDouble(3, product.price!!) }
-        verify(exactly = 1) { preparedStatement.setDouble(4, product.vat!!) }
-        verify(exactly = 1) { preparedStatement.executeUpdate() }
     }
 
     @Test

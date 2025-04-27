@@ -7,29 +7,27 @@ import com.gianpaolo.caprara.purchase.cart.domain.models.OrderItem
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.OrderRepository
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class CreateOrderUseCase(
     private val productRepository: ProductRepository,
     private val orderRepository: OrderRepository
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(CreateOrderUseCase::class.java)
+
     fun apply(order: Order): Order {
-        val newOrderItemList: List<OrderItem> =
-            order.items.map { item ->
-                val product: Product = findProduct(productId = item.product.id)
-                createOrderItem(product = product, quantity = item.quantity)
-            }
-        val newOrder = Order(
-            items = newOrderItemList,
-            price = newOrderItemList.sumOf { it.product.price!! },
-            vat = newOrderItemList.sumOf { it.product.vat!! }
-        )
-        return this.orderRepository.save(newOrder)
+        return this.orderRepository.save(order = createOrder(orderItems = createOrderItems(orderItems = order.items)))
     }
 
-    private fun findProduct(productId: Int): Product = try {
-        this.productRepository.findById(productId)
-    } catch (_: DataNotFoundException) {
-        throw InvalidParameterException("Product with id $productId not found.")
+    private fun createOrder(orderItems: List<OrderItem>): Order = Order(
+        items = orderItems,
+        price = orderItems.sumOf { it.product.price!! },
+        vat = orderItems.sumOf { it.product.vat!! }
+    )
+
+    private fun createOrderItems(orderItems: List<OrderItem>): List<OrderItem> = orderItems.map {
+        createOrderItem(product = findProduct(productId = it.product.id), quantity = it.quantity)
     }
 
     private fun createOrderItem(product: Product, quantity: Int): OrderItem =
@@ -41,4 +39,12 @@ class CreateOrderUseCase(
             ),
             quantity = quantity
         )
+
+    private fun findProduct(productId: Int): Product = try {
+        this.productRepository.findById(productId)
+    } catch (_: DataNotFoundException) {
+        logger.warn("Product with id $productId not found.")
+        throw InvalidParameterException("Product with id $productId not found.")
+    }
+
 }

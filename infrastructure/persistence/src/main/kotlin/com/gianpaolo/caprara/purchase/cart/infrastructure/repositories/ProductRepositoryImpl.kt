@@ -3,22 +3,16 @@ package com.gianpaolo.caprara.purchase.cart.infrastructure.repositories
 import com.gianpaolo.caprara.purchase.cart.domain.exceptions.DataNotFoundException
 import com.gianpaolo.caprara.purchase.cart.domain.models.Product
 import com.gianpaolo.caprara.purchase.cart.domain.repositories.ProductRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.sql.Connection
 
 class ProductRepositoryImpl(private val connection: Connection) : ProductRepository {
 
-    companion object {
-        private const val INSERT_PRODUCT_SQL = "INSERT INTO products (id, name, price, vat) VALUES (?, ?, ?, ?)"
-        private const val SELECT_PRODUCT_SQL = "SELECT * FROM products WHERE id = ?"
-    }
+    private val logger: Logger = LoggerFactory.getLogger(ProductRepositoryImpl::class.java)
 
-    override fun save(product: Product) {
-        val statement = connection.prepareStatement(INSERT_PRODUCT_SQL)
-        statement.setInt(1, product.id)
-        statement.setString(2, product.name)
-        statement.setDouble(3, product.price!!)
-        statement.setDouble(4, product.vat!!)
-        statement.executeUpdate()
+    companion object {
+        private const val SELECT_PRODUCT_SQL = "SELECT * FROM products WHERE id = ?"
     }
 
     override fun findById(id: Int): Product {
@@ -32,6 +26,9 @@ class ProductRepositoryImpl(private val connection: Connection) : ProductReposit
                 price = resultSet.getDouble("price"),
                 vat = resultSet.getDouble("vat")
             )
-        } else throw DataNotFoundException("Product with id $id not found")
+        } else {
+            logger.warn("Product with id $id not found.")
+            throw DataNotFoundException("Product with id $id not found")
+        }
     }
 }

@@ -20,6 +20,7 @@ subprojects {
     apply(plugin = "kotlin")
 
     dependencies {
+        implementation(rootProject.libs.slf4j.api)
         testImplementation(rootProject.libs.junit5)
         testImplementation(rootProject.libs.assertj.core)
         testImplementation(rootProject.libs.mockk)
