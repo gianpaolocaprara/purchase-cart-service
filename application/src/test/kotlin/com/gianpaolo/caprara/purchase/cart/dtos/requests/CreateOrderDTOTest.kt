@@ -1,7 +1,7 @@
 package com.gianpaolo.caprara.purchase.cart.dtos.requests
 
 import com.gianpaolo.caprara.purchase.cart.domain.models.Order
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CreateOrderDTOTest {
@@ -17,11 +17,11 @@ class CreateOrderDTOTest {
             )
         )
 
-        assertEquals(createOrderDTO.order.items.size, 2)
-        assertEquals(createOrderDTO.order.items[0].productId, 1)
-        assertEquals(createOrderDTO.order.items[0].quantity, 1)
-        assertEquals(createOrderDTO.order.items[1].productId, 2)
-        assertEquals(createOrderDTO.order.items[1].quantity, 2)
+        assertThat(createOrderDTO.order.items.size).isEqualTo(2)
+        assertThat(createOrderDTO.order.items[0].productId).isEqualTo(1)
+        assertThat(createOrderDTO.order.items[0].quantity).isEqualTo(1)
+        assertThat(createOrderDTO.order.items[1].productId).isEqualTo(2)
+        assertThat(createOrderDTO.order.items[1].quantity).isEqualTo(2)
     }
 
     @Test
@@ -35,10 +35,10 @@ class CreateOrderDTOTest {
             )
         ).toModel()
 
-        assertEquals(order.items.size, 2)
-        assertEquals(order.items[0].product.id, 1)
-        assertEquals(order.items[0].quantity, 1)
-        assertEquals(order.items[1].product.id, 2)
-        assertEquals(order.items[1].quantity, 2)
+        assertThat(order.items.size).isEqualTo(2)
+        assertThat(order.items[0].product.id).isEqualTo(1)
+        assertThat(order.items[0].quantity).isEqualTo(1)
+        assertThat(order.items[1].product.id).isEqualTo(2)
+        assertThat(order.items[1].quantity).isEqualTo(2)
     }
 }
