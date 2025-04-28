@@ -69,3 +69,28 @@ Use the following settings:
 - **JDBC URL**: jdbc:h2:mem:purchase-cart-service
 - **Username**: admin
 - **Password**: (leave blank)
+
+## CURL example
+
+```
+curl -X POST http://localhost:9090/api/v1/orders \
+-H "Content-Type: application/json" \
+-d '{
+  "order": {
+    "items": [
+      {
+        "product_id": 1,
+        "quantity": 1
+      },
+      {
+        "product_id": 2,
+        "quantity": 5
+      },
+      {
+        "product_id": 3,
+        "quantity": 1
+      }
+    ]
+  }
+}'
+```
