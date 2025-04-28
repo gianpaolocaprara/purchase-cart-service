@@ -1,0 +1,9 @@
+package com.gianpaolo.caprara.purchase.cart.dtos.requests
+
+import com.fasterxml.jackson.annotation.JsonProperty
+
+class OrderItemDTO(
+    @field:JsonProperty("product_id")
+    val productId: Int,
+    val quantity: Int
+)
